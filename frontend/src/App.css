@@ -1,0 +1,65 @@
+/* 🌌 Background */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #020617, #0f172a);
+}
+
+/* Container */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Heading */
+.heading {
+  color: #38bdf8;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px #38bdf8;
+}
+
+/* Card */
+.card {
+  width: 320px;
+  padding: 30px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  transform: perspective(1000px) rotateX(6deg);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: perspective(1000px) rotateX(0deg) scale(1.05);
+}
+
+/* Inputs */
+.card input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+/* Button */
+.card button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #38bdf8;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.card button:hover {
+  transform: scale(1.05);
+}
