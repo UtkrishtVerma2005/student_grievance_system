@@ -1,16 +1,12 @@
 const Grievance = require("../models/Grievance");
 
-// ================= CREATE =================
-exports.createGrievance = async (req, res) => {
+// functions
+const createGrievance = async (req, res) => {
   try {
     const { title, description, category } = req.body;
 
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "User not authorized" });
-    }
-
-    if (!title || !description || !category) {
-      return res.status(400).json({ message: "All fields required" });
     }
 
     const grievance = await Grievance.create({
@@ -22,66 +18,49 @@ exports.createGrievance = async (req, res) => {
 
     res.status(201).json(grievance);
   } catch (err) {
-    console.log("Create error:", err);
+    console.log(err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// ================= GET ALL =================
-exports.getAllGrievances = async (req, res) => {
-  try {
-    const data = await Grievance.find({ user: req.user.id });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+const getAllGrievances = async (req, res) => {
+  const data = await Grievance.find({ user: req.user.id });
+  res.json(data);
 };
 
-// ================= GET BY ID =================
-exports.getGrievanceById = async (req, res) => {
-  try {
-    const data = await Grievance.findById(req.params.id);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+const getGrievanceById = async (req, res) => {
+  const data = await Grievance.findById(req.params.id);
+  res.json(data);
 };
 
-// ================= UPDATE =================
-exports.updateGrievance = async (req, res) => {
-  try {
-    const updated = await Grievance.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+const updateGrievance = async (req, res) => {
+  const updated = await Grievance.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(updated);
 };
 
-// ================= DELETE =================
-exports.deleteGrievance = async (req, res) => {
-  try {
-    await Grievance.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+const deleteGrievance = async (req, res) => {
+  await Grievance.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
 };
 
-// ================= SEARCH =================
-exports.searchGrievance = async (req, res) => {
-  try {
-    const { q } = req.query;
+const searchGrievance = async (req, res) => {
+  const { q } = req.query;
+  const result = await Grievance.find({
+    title: { $regex: q, $options: "i" },
+  });
+  res.json(result);
+};
 
-    const results = await Grievance.find({
-      title: { $regex: q, $options: "i" },
-    });
-
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+// 🔥 IMPORTANT EXPORT
+module.exports = {
+  createGrievance,
+  getAllGrievances,
+  getGrievanceById,
+  updateGrievance,
+  deleteGrievance,
+  searchGrievance,
 };
