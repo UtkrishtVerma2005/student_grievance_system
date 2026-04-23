@@ -12,6 +12,7 @@ const {
   searchGrievance,
 } = require("../controllers/grievanceController");
 
+// routes
 router.post("/", auth, createGrievance);
 router.get("/", auth, getAllGrievances);
 router.get("/search", auth, searchGrievance);
