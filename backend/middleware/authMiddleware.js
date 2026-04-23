@@ -2,18 +2,27 @@ const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
   try {
-    const token = req.headers.authorization;
+    // 🔑 Authorization header lo
+    const authHeader = req.headers.authorization;
 
-    if (!token)
-      return res.status(401).json({ message: "No token" });
+    // ❌ agar token nahi hai
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "No token, authorization denied" });
+    }
 
-    const cleanToken = token.split(" ")[1];
-    const decoded = jwt.verify(cleanToken, "secret");
+    // 🔍 "Bearer token" se token extract karo
+    const token = authHeader.split(" ")[1];
 
+    // 🔐 verify token (IMPORTANT: env se lo)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 👤 user attach karo request me
     req.user = decoded;
+
     next();
   } catch (err) {
-    res.status(401).json({ message: "Invalid Token" });
+    console.log("Auth error:", err.message);
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 

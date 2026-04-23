@@ -1,69 +1,23 @@
-const Grievance = require("../models/Grievance");
-
-// CREATE
 exports.createGrievance = async (req, res) => {
   try {
-    const grievance = await Grievance.create(req.body);
-    res.status(201).json(grievance);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    const { title, description, category } = req.body;
 
-// GET ALL
-exports.getAllGrievances = async (req, res) => {
-  try {
-    const data = await Grievance.find();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    // 🔍 check user
+    if (!req.user) {
+      return res.status(401).json({ message: "User not authorized" });
+    }
 
-// GET BY ID
-exports.getGrievanceById = async (req, res) => {
-  try {
-    const data = await Grievance.findById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Not Found" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// UPDATE
-exports.updateGrievance = async (req, res) => {
-  try {
-    const updated = await Grievance.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// DELETE
-exports.deleteGrievance = async (req, res) => {
-  try {
-    await Grievance.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// SEARCH
-exports.searchGrievance = async (req, res) => {
-  try {
-    const { title } = req.query;
-    const results = await Grievance.find({
-      title: { $regex: title, $options: "i" },
+    const grievance = await Grievance.create({
+      title,
+      description,
+      category,
+      user: req.user.id
     });
-    res.json(results);
+
+    res.status(201).json(grievance);
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log("Create error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
